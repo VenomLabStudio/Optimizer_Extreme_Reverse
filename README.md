@@ -231,6 +231,9 @@ print(f"⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.
 
 ```
 
+![Demo GIF](data.gif)
+
+
 Full Scripts :
 
 ```python
