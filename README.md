@@ -792,7 +792,8 @@ You also can create your own file.txt insert all data transaction you had into "
 
 now we are going to create new scripts without hardcoding fixed data into the file,instead fetching directly from raw data.json 
 
-Only Read Single Transaction data and return single data compute:
+>Only Read Single Transaction data and return single data compute:
+
 ```python
 import json
 
@@ -847,7 +848,7 @@ print(f"🔍 Comparison: Original TX Input = {original_input:.8f} WBNB, New Opti
 print(f"⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.4f}%)")
 ```
 
-Output Response from run above:
+>Output Response from run above:
 ```javascript
 PS D:\New folder> python computein.py
 Step 1: Needed input = 0.00437834 (Before: 0.00436520, Change: 0.00001314 WBNB, 0.3009%)
@@ -860,7 +861,7 @@ Step 4: Needed input = 0.00441798 (Before: 0.00440472, Change: 0.00001325 WBNB, 
 ⚖️ Difference: 0.00060705 WBNB (15.9291%)
 ```
 
-Multi handling reading data transaction on data.json:
+>Multi handling reading data transaction on data.json:
 
 ```python
 import json
