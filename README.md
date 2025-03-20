@@ -130,13 +130,13 @@ First to get understanding,we use same data above on here.
 
 we are going to create a simple script to explain this demo :
 
-```
+```python
 import json
 ```
 
 Second extract the data :
 
-```
+```json
 # ✅ Given Raw Transaction Data
 raw_data = """
 {
@@ -173,24 +173,24 @@ raw_data = """
 ```
 
 # ✅ Parse JSON Data:
-```
+```python
 data = json.loads(raw_data)
 ```
 
 # ✅ Extract original transaction input (amount_start) and final output (amount_end):
-```
+```python
 original_input = float(data["amount_start"].split()[0])
 amount_end = float(data["amount_end"].split()[0])
 ```
 
 # ✅ Swap Fee (0.25% per swap) can set any base on docs or contract 
-```
+```python
 FEE_RATE = 0.997  # 0.25% deducted per swap
 ```
 
 # ✅ Reverse Transfer Order for Backward Calculation
 
-```
+```python
 transfers = data["transfers"][::-1]  
 
 def calculate_optimal_input(amount_out, swaps):
@@ -216,12 +216,12 @@ def calculate_optimal_input(amount_out, swaps):
     return optimal_input
 ```
 # ✅ Compute & Display Optimal Input
-```
+```python
 optimal_starting_input = calculate_optimal_input(amount_end, transfers)
 ```
 
 # ✅ Compare Original Input vs. New Calculated Input
-```
+```python
 input_difference = optimal_starting_input - original_input
 percentage_difference = (input_difference / original_input) * 100 if original_input != 0 else 0
 
@@ -319,7 +319,7 @@ print(f"⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.
 
 Output Reponse :
 
-```
+```python
 PS D:\New folder> python computeIn.py
 Step 1: Needed input = 0.00437834 (Before: 0.00436520, Change: 0.00001314 WBNB, 0.3009%)
 Step 2: Needed input = 0.00439151 (Before: 0.00437834, Change: 0.00001317 WBNB, 0.3009%)
@@ -397,6 +397,8 @@ Conversion to BNB: The fee is converted from Wei to BNB (or from Gwei to the nat
 ________________________________________________________________________________________________________________________________
 
 ==============================================================================================================================
+
+
 #Example Raw Json Data from BACKTRACKV10 (MEV SEARCHER)
 
 ```json
