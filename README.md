@@ -328,6 +328,12 @@ Step 4: Needed input = 0.00441798 (Before: 0.00440472, Change: 0.00001325 WBNB, 
 ⚖️ Difference: 0.00060705 WBNB (15.9291%)
 ```
 
+By comparing the original input
+```
+🔍 Comparison: Original TX Input = 0.00381093 WBNB, New Optimal Input = 0.00441798 WBNB
+```
+
+(as specified in the raw transaction data) with the calculated optimal input, this method highlights any discrepancies between expected and actual input requirements. This comparison helps users understand how transaction fees, token prices, and liquidity might affect their original assumptions and enables them to make adjustments for more accurate future transactions.
 
 The script performs backward calculations starting from the final output to determine how much input is required initially, considering the fee deducted at each swap step.
 
