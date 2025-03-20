@@ -314,5 +314,20 @@ print(f"🔍 Comparison: Original TX Input = {original_input:.8f} WBNB, New Opti
 print(f"⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.4f}%)")
 ```
 
+Output Reponse :
+
+```
+PS D:\New folder> python computeIn.py
+Step 1: Needed input = 0.00437834 (Before: 0.00436520, Change: 0.00001314 WBNB, 0.3009%)
+Step 2: Needed input = 0.00439151 (Before: 0.00437834, Change: 0.00001317 WBNB, 0.3009%)
+Step 3: Needed input = 0.00440472 (Before: 0.00439151, Change: 0.00001321 WBNB, 0.3009%)
+Step 4: Needed input = 0.00441798 (Before: 0.00440472, Change: 0.00001325 WBNB, 0.3009%)
+
+🔥 Optimal Starting Input: 0.00441798 WBNB
+🔍 Comparison: Original TX Input = 0.00381093 WBNB, New Optimal Input = 0.00441798 WBNB
+⚖️ Difference: 0.00060705 WBNB (15.9291%)
+```
+
+
 The script performs backward calculations starting from the final output to determine how much input is required initially, considering the fee deducted at each swap step.
 
