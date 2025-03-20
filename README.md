@@ -788,5 +788,180 @@ on your data.json will look something like this :
     },
 ```
 
+You also can create your own file.txt insert all data transaction you had into "thisfile.txt" any name,than use code above to extract into data.json.
+
+now we are going to create new scripts without hardcoding fixed data into the file,instead fetching directly from raw data.json 
+
+Only Read Single Transaction data and return single data compute:
+```python
+import json
+
+# ✅ Load Data from data.json
+with open("data.json", "r") as file:
+    all_data = json.load(file)
+
+# ✅ Select the first transaction entry
+data = all_data[0]  # Assuming we take the first transaction from the list
+
+# ✅ Extract original transaction input (amount_start) and final output (amount_end)
+original_input = float(data["amount_start"].split()[0])
+amount_end = float(data["amount_end"].split()[0])
+
+# ✅ Swap Fee (0.25% per swap)
+FEE_RATE = 0.997  # 0.25% deducted per swap
+
+# ✅ Reverse Transfer Order for Backward Calculation
+transfers = data["transfers"][::-1]  
+
+def calculate_optimal_input(amount_out, swaps):
+    """Calculate the required starting input to get the desired output."""
+    optimal_input = amount_out  
+
+    for i, swap in enumerate(swaps):
+        # Extract the output amount of the current swap
+        output_amount = float(swap["amount"].split()[0])
+
+        if output_amount > 0:
+            previous_input = optimal_input  # Store previous value
+            optimal_input /= FEE_RATE  # Reverse the fee deduction
+
+            # Compare previous and latest input price
+            price_change = optimal_input - previous_input
+            percentage_change = (price_change / previous_input) * 100 if previous_input != 0 else 0
+
+            print(f"Step {i+1}: Needed input = {optimal_input:.8f} (Before: {previous_input:.8f}, Change: {price_change:.8f} WBNB, {percentage_change:.4f}%)")
+        else:
+            print(f"⚠️ Warning: Zero output detected at step {i+1}!")
+
+    return optimal_input
+
+# ✅ Compute & Display Optimal Input
+optimal_starting_input = calculate_optimal_input(amount_end, transfers)
+
+# ✅ Compare Original Input vs. New Calculated Input
+input_difference = optimal_starting_input - original_input
+percentage_difference = (input_difference / original_input) * 100 if original_input != 0 else 0
+
+print(f"\n🔥 Optimal Starting Input: {optimal_starting_input:.8f} WBNB")
+print(f"🔍 Comparison: Original TX Input = {original_input:.8f} WBNB, New Optimal Input = {optimal_starting_input:.8f} WBNB")
+print(f"⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.4f}%)")
+```
+
+Output Response from run above:
+```javascript
+PS D:\New folder> python computein.py
+Step 1: Needed input = 0.00437834 (Before: 0.00436520, Change: 0.00001314 WBNB, 0.3009%)
+Step 2: Needed input = 0.00439151 (Before: 0.00437834, Change: 0.00001317 WBNB, 0.3009%)
+Step 3: Needed input = 0.00440472 (Before: 0.00439151, Change: 0.00001321 WBNB, 0.3009%)
+Step 4: Needed input = 0.00441798 (Before: 0.00440472, Change: 0.00001325 WBNB, 0.3009%)
+
+🔥 Optimal Starting Input: 0.00441798 WBNB
+🔍 Comparison: Original TX Input = 0.00381093 WBNB, New Optimal Input = 0.00441798 WBNB
+⚖️ Difference: 0.00060705 WBNB (15.9291%)
+```
+
+Multi handling reading data transaction on data.json:
+
+```python
+import json
+
+# ✅ Load Data from data.json
+with open("data.json", "r") as file:
+    all_data = json.load(file)
+
+# ✅ Swap Fee (0.25% per swap)
+FEE_RATE = 0.997  # 0.25% deducted per swap
+
+def calculate_optimal_input(transaction, idx):
+    """Calculate the required starting input to get the desired output."""
+
+    # ✅ Get transaction hash safely
+    tx_hash = transaction.get("hash", f"Unknown_TX_{idx}")
+
+    original_input = float(transaction["amount_start"].split()[0])
+    amount_end = float(transaction["amount_end"].split()[0])
+
+    transfers = transaction.get("transfers", [])[::-1]  # Reverse transfers list
+
+    print(f"📌 Transaction {idx}: Hash {tx_hash}")
+
+    if not transfers:
+        print("  ⚠️ Warning: No transfer data found! Skipping...\n")
+        return
+
+    optimal_input = amount_end  
+    for i, swap in enumerate(transfers):
+        output_amount = float(swap["amount"].split()[0])
+
+        if output_amount > 0:
+            previous_input = optimal_input  # Store previous value
+            optimal_input /= FEE_RATE  # Reverse the fee deduction
+
+            # Compare previous and latest input price
+            price_change = optimal_input - previous_input
+            percentage_change = (price_change / previous_input) * 100 if previous_input != 0 else 0
+
+            print(f"  Step {i+1}: Needed input = {optimal_input:.8f} (Before: {previous_input:.8f}, Change: {price_change:.8f} WBNB, {percentage_change:.4f}%)")
+        else:
+            print(f"  ⚠️ Warning: Zero output detected at step {i+1}!")
+
+    # ✅ Compare Original Input vs. New Calculated Input
+    input_difference = optimal_input - original_input
+    percentage_difference = (input_difference / original_input) * 100 if original_input != 0 else 0
+
+    print(f"\n  🔥 Optimal Starting Input: {optimal_input:.8f} WBNB")
+    print(f"  🔍 Comparison: Original TX Input = {original_input:.8f} WBNB, New Optimal Input = {optimal_input:.8f} WBNB")
+    print(f"  ⚖️ Difference: {input_difference:.8f} WBNB ({percentage_difference:.4f}%)\n")
+    print("="*60)
+
+# ✅ Process all transactions in data.json
+print("\n🚀 Processing Multiple Transactions...\n")
+for idx, transaction in enumerate(all_data, start=1):
+    calculate_optimal_input(transaction, idx)
+```
+
+Output Response from multi reading transaction :
+
+```python
+🚀 Processing Multiple Transactions...
+
+📌 Transaction 1: Hash Unknown_TX_1
+  Step 1: Needed input = 0.00437834 (Before: 0.00436520, Change: 0.00001314 WBNB, 0.3009%)
+  Step 2: Needed input = 0.00439151 (Before: 0.00437834, Change: 0.00001317 WBNB, 0.3009%)
+  Step 3: Needed input = 0.00440472 (Before: 0.00439151, Change: 0.00001321 WBNB, 0.3009%)
+  Step 4: Needed input = 0.00441798 (Before: 0.00440472, Change: 0.00001325 WBNB, 0.3009%)
+
+  🔥 Optimal Starting Input: 0.00441798 WBNB
+  🔍 Comparison: Original TX Input = 0.00381093 WBNB, New Optimal Input = 0.00441798 WBNB
+  ⚖️ Difference: 0.00060705 WBNB (15.9291%)
+
+============================================================
+📌 Transaction 2: Hash Unknown_TX_2
+  Step 1: Needed input = 0.42889870 (Before: 0.42761200, Change: 0.00128670 WBNB, 0.3009%)
+  Step 2: Needed input = 0.43018926 (Before: 0.42889870, Change: 0.00129057 WBNB, 0.3009%)
+  Step 3: Needed input = 0.43148372 (Before: 0.43018926, Change: 0.00129445 WBNB, 0.3009%)
+  Step 4: Needed input = 0.43278206 (Before: 0.43148372, Change: 0.00129835 WBNB, 0.3009%)
+  Step 5: Needed input = 0.43408431 (Before: 0.43278206, Change: 0.00130225 WBNB, 0.3009%)
+  Step 6: Needed input = 0.43539049 (Before: 0.43408431, Change: 0.00130617 WBNB, 0.3009%)
+
+  🔥 Optimal Starting Input: 0.43539049 WBNB
+  🔍 Comparison: Original TX Input = 245.84000000 WBNB, New Optimal Input = 0.43539049 WBNB
+  ⚖️ Difference: -245.40460951 WBNB (-99.8229%)
+
+============================================================
+📌 Transaction 3: Hash Unknown_TX_3
+  Step 1: Needed input = 80.01003009 (Before: 79.77000000, Change: 0.24003009 WBNB, 0.3009%)
+  Step 2: Needed input = 80.25078244 (Before: 80.01003009, Change: 0.24075235 WBNB, 0.3009%)
+  Step 3: Needed input = 80.49225922 (Before: 80.25078244, Change: 0.24147678 WBNB, 0.3009%)
+
+  🔥 Optimal Starting Input: 80.49225922 WBNB
+  🔍 Comparison: Original TX Input = 0.13776600 WBNB, New Optimal Input = 80.49225922 WBNB
+  ⚖️ Difference: 80.35449322 WBNB (58326.7956%)
+
+============================================================
+```
+
+
+
 
 
