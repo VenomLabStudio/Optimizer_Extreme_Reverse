@@ -108,63 +108,16 @@ for this example,we are using data extract from BACKTRACK V10 (MEV SEARCHER) :
 ]
 ```
 This mev data showing profit with +14% gaining from mev arbitrage.But do you know we can imporve the trade size by using formula :
+________________________________________________________________________________________________________________________________
 
-```
-Summary of Used Formulas:
-#	Formula	Purpose
-1	
-optimal_input
-=
-amount_out
-FEE_RATE
-optimal_input= 
-FEE_RATE
-amount_out
-​
- 	Reverse swap fee effect
-2	
-price_change
-=
-optimal_input
-−
-previous_input
-price_change=optimal_input−previous_input	Compute absolute input change
-3	
-percentage_change
-=
-(
-price_change
-previous_input
-)
-×
-100
-percentage_change=( 
-previous_input
-price_change
-​
- )×100	Show relative change per swap
-4	
-input_difference
-=
-optimal_starting_input
-−
-original_input
-input_difference=optimal_starting_input−original_input	Compare total input difference
-5	
-percentage_difference
-=
-(
-input_difference
-original_input
-)
-×
-100
-percentage_difference=( 
-original_input
-input_difference
-​
- )×100	Show efficiency gain (%)
-```
+## Summary of Used Formulas
 
+| #  | Formula | Purpose |
+|----|---------|---------|
+| 1  | `optimal_input = amount_out / FEE_RATE` | Reverse swap fee effect |
+| 2  | `price_change = optimal_input - previous_input` | Compute absolute input change |
+| 3  | `percentage_change = (price_change / previous_input) × 100` | Show relative change per swap |
+| 4  | `input_difference = optimal_starting_input - original_input` | Compare total input difference |
+| 5  | `percentage_difference = (input_difference / original_input) × 100` | Show efficiency gain (%) |
 
 
