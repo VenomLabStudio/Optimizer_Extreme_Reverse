@@ -396,133 +396,208 @@ Conversion to BNB: The fee is converted from Wei to BNB (or from Gwei to the nat
 
 ________________________________________________________________________________________________________________________________
 
-This guide explains how to fetch PancakeSwap V3 pairs with multiple fee tiers using GraphQL.
+==============================================================================================================================
+#Example Raw Json Data from BACKTRACKV10 (MEV SEARCHER)
 
-🚀 Installation
-First, install graphql-request:
-
-sh
-Copy
-Edit
-npm install graphql-request
-📜 Running the Script
-Run your script to fetch pairs:
-
-sh
-Copy
-Edit
-node fetchPairsWithMultipleFees.js
-🔍 Fetching 1000 Pairs with Fees
-Below is a JavaScript script using CommonJS (require) syntax:
-
-javascript
-Copy
-Edit
-const { GraphQLClient, gql } = require('graphql-request');
-
-// PancakeSwap V3 Subgraph Endpoint
-const endpoint = 'https://api.thegraph.com/subgraphs/name/pancakeswap/pairs';
-const client = new GraphQLClient(endpoint);
-
-// GraphQL Query
-const query = gql`
-  {
-    pairs(first: 1000) {
-      id
-      token0 { symbol }
-      token1 { symbol }
-      feeTier
-      liquidity
-      volumeUSD
+```json
+[
+    {
+        "detection": "Matching Transaction MEV ARBITRAGE Detected",
+        "transfers": []
+    },
+    {
+        "detection": "Matching Transaction MEV ARBITRAGE Detected",
+        "method": "0x40e5c1ee (Get Rich)",
+        "from": "0x000000000E9e87cB030A951f10062810bdC1B117",
+        "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+        "value_sent": "0.0 ETH",
+        "transaction_hash": "0x1553d95b1afc6c610bb0aad6a49b74f27301f10951979b32e21ec1afda965e0d",
+        "transaction_link": "https://bscscan.com/tx/0x1553d95b1afc6c610bb0aad6a49b74f27301f10951979b32e21ec1afda965e0d",
+        "transaction_time": "2 seconds ago",
+        "gas_price": "1.00 Gwei",
+        "gas_limit": "591450 gas",
+        "gas_used": "0.000199416 Gwei",
+        "transaction_status": " [32mSuccess [0m",
+        "total_bep20_transfers": "4",
+        "date_today": "14/03/2025",
+        "current_time": "6:04:10 pm",
+        "timestamp": "3 seconds ago // Displaying the formatted timestamp",
+        "total_tokens": "3",
+        "total_pools": "4",
+        "total_swaps": "4",
+        "total_addresses": "7",
+        "amount_start": "0.00381093 WBNB",
+        "amount_end": "0.00436520 WBNB",
+        "profit_loss": "$0.321136",
+        "percentage_pnl": "+14.54",
+        "transaction_path": " [38;5;189m [1mswap 1: WBNB > swap 2: wSHIB > swap 3: wBTC > swap 4: WBNB [0m // Fluorescent baby blue and bold for the path",
+        "transfers": [
+            {
+                "transfer_number": 1,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x74C2F69FB0CB5Df4317A538B51C0A8186F31c08B (pancakeswap_v2, wSHIB / WBNB)",
+                "amount": "0.003810931158961923 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 2,
+                "from": "0x74C2F69FB0CB5Df4317A538B51C0A8186F31c08B",
+                "to": "0xADE812e9302dC9AE52F961A60DD30e16889b2Ab3 (pancakeswap_v2, wSHIB / wBTC)",
+                "amount": "29968166569.407544 wSHIB",
+                "token_name": "wShiba",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 3,
+                "from": "0xADE812e9302dC9AE52F961A60DD30e16889b2Ab3",
+                "to": "0x62EA4676582a373dDC2FEACdd7a1F0b339206861 (pancakeswap_v2, wBTC / WBNB)",
+                "amount": "13091859.15557748 wBTC",
+                "token_name": "wBitcoin",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 4,
+                "from": "0x62EA4676582a373dDC2FEACdd7a1F0b339206861",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "0.004365196915818284 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            }
+        ]
+    },
+    {
+        "detection": "Matching Transaction MEV ARBITRAGE Detected",
+        "method": "0x40e5c1ee (Get Rich)",
+        "from": "0x00000000009e560932B2D1B4161c7ccD7F5c1FAb",
+        "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+        "value_sent": "0.0 ETH",
+        "transaction_hash": "0x4df3532f2053b8d0a8feef0c2237dfbc4402ec2bf27f2c7c690674c4a2e95950",
+        "transaction_link": "https://bscscan.com/tx/0x4df3532f2053b8d0a8feef0c2237dfbc4402ec2bf27f2c7c690674c4a2e95950",
+        "transaction_time": "1 second ago",
+        "gas_price": "1.00 Gwei",
+        "gas_limit": "1019898 gas",
+        "gas_used": "0.0003187 Gwei",
+        "transaction_status": " [32mSuccess [0m",
+        "total_bep20_transfers": "6",
+        "date_today": "14/03/2025",
+        "current_time": "6:27:41 pm",
+        "timestamp": "1 second ago // Displaying the formatted timestamp",
+        "total_tokens": "3",
+        "total_pools": "5",
+        "total_swaps": "6",
+        "total_addresses": "8",
+        "amount_start": "245.84 USDT",
+        "amount_end": "0.427612 WBNB",
+        "profit_loss": "$2.16",
+        "percentage_pnl": "+0.88",
+        "transaction_path": " [38;5;189m [1mswap 1: USDT > swap 2: RED > swap 3: RED > swap 4: WBNB > swap 5: USDT > swap 6: WBNB [0m // Fluorescent baby blue and bold for the path",
+        "transfers": [
+            {
+                "transfer_number": 1,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34 (pancakeswap_v2, RED / USDT)",
+                "amount": "245.840941721450159647 USDT",
+                "token_name": "Tether USD",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 2,
+                "from": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34",
+                "to": "0xB0ec48CC71D9e1F6811db88366E24269528267C5 (Unknown DEX, Unknown Token Pool)",
+                "amount": "12600.592612850694493259 RED",
+                "token_name": "RED",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 3,
+                "from": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34",
+                "to": "0x34A4AbE4722D535279f6211e029A046EdF2B6ae4 (pancakeswap_v2, RED / WBNB)",
+                "amount": "2507517.929957288204158625 RED",
+                "token_name": "RED",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 4,
+                "from": "0x34A4AbE4722D535279f6211e029A046EdF2B6ae4",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "0.427612061029644369 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 5,
+                "from": "0x172fcD41E0913e95784454622d1c3724f546f849",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "247.735082834813280822 USDT",
+                "token_name": "Tether USD",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 6,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x172fcD41E0913e95784454622d1c3724f546f849 (pancakeswap-v3-bsc, USDT / WBNB 0.01%)",
+                "amount": "0.427612061029644369 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            }
+        ]
+    },
+    {
+        "detection": "Matching Transaction MEV ARBITRAGE Detected",
+        "method": "0x94655f2b (Print Money)",
+        "from": "0x00000000009f30BF58f8CC15772009F1f2F841f6",
+        "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+        "value_sent": "0.0 ETH",
+        "transaction_hash": "0x456fe5721450a996bee5ffd3096a1a6fba00cd8282efffb8fef8f4a902500da9",
+        "transaction_link": "https://bscscan.com/tx/0x456fe5721450a996bee5ffd3096a1a6fba00cd8282efffb8fef8f4a902500da9",
+        "transaction_time": "2 seconds ago",
+        "gas_price": "0.00 Gwei",
+        "gas_limit": "242625 gas",
+        "gas_used": "0.000174566 Gwei",
+        "transaction_status": " [32mSuccess [0m",
+        "total_bep20_transfers": "3",
+        "date_today": "14/03/2025",
+        "current_time": "8:46:45 pm",
+        "timestamp": "8 seconds ago // Displaying the formatted timestamp",
+        "total_tokens": "3",
+        "total_pools": "4",
+        "total_swaps": "6",
+        "total_addresses": "7",
+        "amount_start": "0.137766 WBNB",
+        "amount_end": "79.77 USDT",
+        "profit_loss": "$0.120037",
+        "percentage_pnl": "+0.15",
+        "transaction_path": " [38;5;189m [1mswap 1: WBNB > swap 2: USDC > swap 3: USDT > swap 4: USDC > swap 5: WBNB > swap 6: USDT [0m // Fluorescent baby blue and bold for the path",
+        "transfers": [
+            {
+                "transfer_number": 1,
+                "from": "0xc322439592F9729FE956CB019B0D7bCe9A72589E",
+                "to": "0x250691ec7fEFC329b3134DD86883658BEfF776D0 (pancakeswap_v2, Holi / WBNB)",
+                "amount": "45736.819826639857721526 Holi",
+                "token_name": "Holi",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 2,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0xc322439592F9729FE956CB019B0D7bCe9A72589E (pancakeswap-v3-bsc, Holi / WBNB 0.25%)",
+                "amount": "0.00421333015442372 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 3,
+                "from": "0x250691ec7fEFC329b3134DD86883658BEfF776D0",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "0.005009237125451256 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            }
+        ]
     }
-  }
-`;
-
-// Fetch Pairs and Filter by Fee Tiers
-async function fetchPairsWithMultipleFees() {
-  try {
-    const data = await client.request(query);
-    const feeGroups = {};
-
-    data.pairs.forEach(pair => {
-      const pairKey = `${pair.token0.symbol}-${pair.token1.symbol}`;
-      feeGroups[pairKey] = feeGroups[pairKey] || new Set();
-      feeGroups[pairKey].add(pair.feeTier);
-    });
-
-    console.log('📊 Pairs with Multiple Fee Tiers:');
-    Object.entries(feeGroups)
-      .filter(([_, fees]) => fees.size > 1)
-      .forEach(([pair, fees]) => console.log(`🔹 ${pair}: ${[...fees].join(', ')}`));
-
-  } catch (error) {
-    console.error('❌ Error fetching data:', error);
-  }
-}
-
-// Run the function
-fetchPairsWithMultipleFees();
-🔄 Alternative: Using ES Modules (.mjs)
-If you encounter CommonJS module errors, use the following ES Module (.mjs) version:
-
-javascript
-Copy
-Edit
-import { GraphQLClient, gql } from 'graphql-request';
-
-const endpoint = 'https://api.thegraph.com/subgraphs/name/pancakeswap/pairs';
-const client = new GraphQLClient(endpoint);
-
-const query = gql`
-  {
-    pairs(first: 1000) {
-      id
-      token0 { symbol }
-      token1 { symbol }
-      feeTier
-      liquidity
-      volumeUSD
-    }
-  }
-`;
-
-async function fetchPairsWithMultipleFees() {
-  try {
-    const data = await client.request(query);
-    const feeGroups = {};
-
-    data.pairs.forEach(pair => {
-      const pairKey = `${pair.token0.symbol}-${pair.token1.symbol}`;
-      feeGroups[pairKey] = feeGroups[pairKey] || new Set();
-      feeGroups[pairKey].add(pair.feeTier);
-    });
-
-    console.log('📊 Pairs with Multiple Fee Tiers:');
-    Object.entries(feeGroups)
-      .filter(([_, fees]) => fees.size > 1)
-      .forEach(([pair, fees]) => console.log(`🔹 ${pair}: ${[...fees].join(', ')}`));
-
-  } catch (error) {
-    console.error('❌ Error fetching data:', error);
-  }
-}
-
-// Run the function
-fetchPairsWithMultipleFees();
-❓ Troubleshooting
-If you encounter:
-
-ERR_REQUIRE_ESM: Rename your script to .mjs or use import().
-
-Cannot find module 'graphql-request': Run:
-
-sh
-Copy
-Edit
-npm install graphql-request
-🔗 References:
-PancakeSwap V3 Subgraph
-graphql-request Docs
+]
+```
 
 
 
