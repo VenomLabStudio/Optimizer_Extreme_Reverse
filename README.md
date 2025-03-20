@@ -974,4 +974,70 @@ handle cases where the start currency and end currency differ (e.g., WBNB → US
 Solution Approach:
 >Create a system rearrange the correct transfer inside the raw data.json
 
+Raw data some reason mislead arrangement flow :
+```json
+ "transfers": [
+            {
+                "transfer_number": 1,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34 (pancakeswap_v2, RED / USDT)",
+                "amount": "245.840941721450159647 USDT",
+                "token_name": "Tether USD",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 2,
+                "from": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34",
+                "to": "0xB0ec48CC71D9e1F6811db88366E24269528267C5 (Unknown DEX, Unknown Token Pool)",
+                "amount": "12600.592612850694493259 RED",
+                "token_name": "RED",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 3,
+                "from": "0x0eF6FC9Aa0A48AADa260ae93C6a6A0Ce59794e34",
+                "to": "0x34A4AbE4722D535279f6211e029A046EdF2B6ae4 (pancakeswap_v2, RED / WBNB)",
+                "amount": "2507517.929957288204158625 RED",
+                "token_name": "RED",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 4,
+                "from": "0x34A4AbE4722D535279f6211e029A046EdF2B6ae4",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "0.427612061029644369 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 5,
+                "from": "0x172fcD41E0913e95784454622d1c3724f546f849",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "247.735082834813280822 USDT",
+                "token_name": "Tether USD",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 6,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x172fcD41E0913e95784454622d1c3724f546f849 (pancakeswap-v3-bsc, USDT / WBNB 0.01%)",
+                "amount": "0.427612061029644369 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            }
+        ]
+    },
+```
+
+🛠 Why Does This Happen?
+Raw transaction logs do not follow swap flow order.
+Some transfers appear before the swap event is fully executed.
+Some transfers bundle multiple steps together.
+BEP-20 logs record internal transfers, not the logical flow.
+Smart contracts sometimes execute swaps atomically, moving tokens in unexpected sequences.
+🔹 How to Fix the Arrangement?
+To correctly reorder the transfers, we should:
+✅ Identify the true swap flow by tracking input → output changes.
+✅ Rearrange the logs to match the correct token path.
+✅ Group token movements by logical execution order.
 
