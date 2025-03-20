@@ -337,3 +337,23 @@ By comparing the original input
 
 The script performs backward calculations starting from the final output to determine how much input is required initially, considering the fee deducted at each swap step.
 
+__________________________________________________________________________________________________________________________________________________________________________________________________
+
+Instead manually hardcode the fees in the script,we are going to get actual gas fees and etc by using :
+
+Transaction Fee Calculation: The actual transaction fee is computed using the formula:
+```
+Transaction Fee=Gas Price×Gas Used
+```
+Fetching Actual Gas Fees: The gas price and gas used are dynamically fetched using the Web3 provider
+
+```
+(w3.eth.getTransaction(transaction_hash)), which provides real-time data for the transaction.
+```
+Conversion to BNB: The fee is converted from Wei to BNB (or from Gwei to the native token) to match the transaction format.
+
+Test_scripts 2 with actual fees optimization:
+
+```
+
+
