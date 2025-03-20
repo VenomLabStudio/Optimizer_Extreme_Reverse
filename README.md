@@ -597,6 +597,19 @@ ________________________________________________________________________________
 To fetch data mev from Server backtrack V10 you need to have unique token api and rpc.Please contact Team VenomLab Studio.
  or using SDK Libraries "sdk_venom"
 
+Fetching Data from data.json in JavaScript
+Fetching data from a data.json file can be done using JavaScript in both Node.js and browser environments. Below are different methods based on your use case.
+
+| Use Case           | Method                          |
+|--------------------|--------------------------------|
+| Browser (Frontend) | `fetch()`                      |
+| Node.js (Sync)    | `fs.readFileSync()`            |
+| Node.js (Async)   | `fs.promises.readFile()`       |
+| Node.js (CommonJS) | `require('./data.json')`      |
+| Node.js (ES Modules) | `import fs from 'fs'`       |
+| Remote JSON (API) | `axios.get('url')`            |
+
+
 
 
 
