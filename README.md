@@ -394,8 +394,153 @@ Fetching Actual Gas Fees: The gas price and gas used are dynamically fetched usi
 ```
 Conversion to BNB: The fee is converted from Wei to BNB (or from Gwei to the native token) to match the transaction format.
 
-Test_scripts 2 with actual fees optimization:
+________________________________________________________________________________________________________________________________
+
+Extra Information : How to fetch fees on V3 using venomlab studio style :
+#Learning_fetch
+
+Install graphql-request: Run the following command in your project directory to install the graphql-request package:
 
 ```
+npm install graphql-request
+```
+Run your test scripts:
+```
+node fetchPairsWithMultipleFees.js
+```
+
+Fetching 1000 pairs with fees:
+
+```
+const { GraphQLClient, gql } = require('graphql-request');
+
+// The PancakeSwap V3 Subgraph Endpoint
+const endpoint = 'https://api.thegraph.com/subgraphs/name/pancakeswap/pairs';
+
+// Initialize the GraphQL client
+const client = new GraphQLClient(endpoint);
+
+// GraphQL query to fetch pairs with their fee tiers
+const query = gql`
+  {
+    pairs(first: 1000) {
+      id
+      token0 {
+        symbol
+      }
+      token1 {
+        symbol
+      }
+      feeTier
+      liquidity
+      volumeUSD
+    }
+  }
+`;
+
+// Function to fetch and process pairs
+async function fetchPairsWithMultipleFees() {
+  try {
+    const data = await client.request(query);
+    const pairs = data.pairs;
+
+    // Filter pairs with multiple fee tiers
+    const feeGroups = {};
+
+    pairs.forEach(pair => {
+      const feeTier = pair.feeTier;
+      const pairKey = `${pair.token0.symbol}-${pair.token1.symbol}`;
+
+      if (!feeGroups[pairKey]) {
+        feeGroups[pairKey] = new Set();
+      }
+
+      feeGroups[pairKey].add(feeTier);
+    });
+
+    // Output pairs with multiple fee tiers
+    console.log('Pairs with Multiple Fee Tiers:');
+    for (const pair in feeGroups) {
+      if (feeGroups[pair].size > 1) {
+        console.log(`${pair} has the following fee tiers: ${[...feeGroups[pair]].join(', ')}`);
+      }
+    }
+
+  } catch (error) {
+    console.error('Error fetching data from PancakeSwap V3 Subgraph:', error);
+  }
+}
+
+// Run the function
+fetchPairsWithMultipleFees();
+```
+
+If you have problem package ,try using mjs module :
+
+```
+import { GraphQLClient, gql } from 'graphql-request';
+
+// The PancakeSwap V3 Subgraph Endpoint
+const endpoint = 'https://api.thegraph.com/subgraphs/name/pancakeswap/pairs';
+
+// Initialize the GraphQL client
+const client = new GraphQLClient(endpoint);
+
+// GraphQL query to fetch pairs with their fee tiers
+const query = gql`
+  {
+    pairs(first: 1000) {
+      id
+      token0 {
+        symbol
+      }
+      token1 {
+        symbol
+      }
+      feeTier
+      liquidity
+      volumeUSD
+    }
+  }
+`;
+
+// Function to fetch and process pairs
+async function fetchPairsWithMultipleFees() {
+  try {
+    const data = await client.request(query);
+    const pairs = data.pairs;
+
+    // Filter pairs with multiple fee tiers
+    const feeGroups = {};
+
+    pairs.forEach(pair => {
+      const feeTier = pair.feeTier;
+      const pairKey = `${pair.token0.symbol}-${pair.token1.symbol}`;
+
+      if (!feeGroups[pairKey]) {
+        feeGroups[pairKey] = new Set();
+      }
+
+      feeGroups[pairKey].add(feeTier);
+    });
+
+    // Output pairs with multiple fee tiers
+    console.log('Pairs with Multiple Fee Tiers:');
+    for (const pair in feeGroups) {
+      if (feeGroups[pair].size > 1) {
+        console.log(`${pair} has the following fee tiers: ${[...feeGroups[pair]].join(', ')}`);
+      }
+    }
+
+  } catch (error) {
+    console.error('Error fetching data from PancakeSwap V3 Subgraph:', error);
+  }
+}
+
+// Run the function
+fetchPairsWithMultipleFees();
+```
+
+
 
 
