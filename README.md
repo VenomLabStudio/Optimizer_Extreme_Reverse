@@ -1,6 +1,9 @@
 # Optimizer_Extreme_Reverse
 This script calculates the optimal starting input and output from Backtrack V10 data MEV for a multi-hop token swap by working backward from the final output amount
 
+![Alt text](reverse.webp)
+
+
 
 Understanding the concept "REVERSE BACKTRACK" when able to use when NOT to Use.
 _______________________________________________________________________________
