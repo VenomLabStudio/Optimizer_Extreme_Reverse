@@ -609,7 +609,184 @@ Fetching data from a data.json file can be done using JavaScript in both Node.js
 | Node.js (ES Modules) | `import fs from 'fs'`       |
 | Remote JSON (API) | `axios.get('url')`            |
 
+##### Assume you have Backtrack V10  
+All data extract from BacktrackV10  fetched will be saved into memory, including a log report in `.txt` and `data.json`.
 
+This step if your directories doesn't have "data.json"
+
+Now we build simple script using python turn data on log report .txt into json format and sent into data.json
+
+```python
+import json
+import os
+import re
+
+# File paths
+input_file = r"D:\New folder\infotx.txt"
+output_file = r"D:\New folder\data.json"
+
+# Regular expressions for transaction details
+patterns = {
+    "method": r"➡️ Method: (.+)",
+    "from": r"➡️ From: (.+)",
+    "to": r"➡️ To: (.+)",
+    "value_sent": r"➡️ Value Sent: (.+)",
+    "transaction_hash": r"➡️ Transaction Hash: (.+)",
+    "transaction_link": r"➡️ Transaction Link: (.+)",
+    "transaction_time": r"➡️ Transaction Time: (.+)",
+    "gas_price": r"➡️ Gas Price: (.+)",
+    "gas_limit": r"➡️ Gas Limit: (.+)",
+    "gas_used": r"➡️ Gas Used \(Tx Fees\): (.+)",
+    "transaction_status": r"➡️ Transaction Status: (.+)",
+    "total_bep20_transfers": r"🪙 \[Total BEP20 Token Transfers\]: (\d+)"
+}
+
+# Regex patterns for transaction summary details
+summary_patterns = {
+    "date_today": r"🗓️ \*\*Date Today\*\*: (.+)",
+    "current_time": r"⏰ \*\*Current Time\*\*: (.+)",
+    "timestamp": r"🕒 \*\*Timestamp\*\*: (.+)",
+    "total_tokens": r"🔹 \*\*Total Tokens Involved\*\*: (\d+) Token\(s\)",
+    "total_pools": r"💰 \*\*Total Pools\*\*: (\d+) Pool\(s\)",
+    "total_swaps": r"🔄 \*\*Total Leg Swaps\*\*: (\d+) Swap\(s\)",
+    "total_addresses": r"🤖 \*\*Total Smart Contracts \(Addresses\)\*\*: (\d+) Address\(es\)",
+    "amount_start": r"💸 \*\*Amount Start\*\*: (.+?) \(Converted: (.+?) USD\)",
+    "amount_end": r"💰 \*\*Amount End\*\*: (.+?) \(Converted: (.+?) USD\)",
+    "profit_loss": r"💹 \*\*Profit/Loss\*\*: (.+?) USD",
+    "percentage_pnl": r"📊 \*\*Percentage PnL\*\*: (.+?)%",
+    "transaction_path": r"🌐 \*\*Transaction Path\*\*: (.+)"
+}
+
+# Regex pattern for individual token transfers
+transfer_pattern = re.compile(
+    r"🔹 Transfer (\d+):\s*"
+    r"➡️ From: (.+?)\s*"
+    r"➡️ To: (.+?)\s*"
+    r"➡️ Amount: (.+?)\s*"
+    r"➡️ Token Name: (.+?)\s*"
+    r"➡️ Token Address: (.+?)\s*",
+    re.DOTALL
+)
+
+# Pattern for splitting multiple transactions
+transaction_split_pattern = r"📡 \[Matching Transaction MEV ARBITRAGE Detected\]:=*"
+
+# Read the file content
+with open(input_file, "r", encoding="utf-8") as file:
+    content = file.read()
+
+# Split content into multiple transactions
+transaction_blocks = re.split(transaction_split_pattern, content)
+transactions = []
+
+for block in transaction_blocks:
+    if block.strip():  # Ignore empty blocks
+        transaction_data = {"detection": "Matching Transaction MEV ARBITRAGE Detected"}
+
+        # Extract general transaction details
+        for key, pattern in patterns.items():
+            match = re.search(pattern, block)
+            if match:
+                transaction_data[key] = match.group(1)
+
+        # Extract summary details
+        for key, pattern in summary_patterns.items():
+            match = re.search(pattern, block)
+            if match:
+                transaction_data[key] = match.group(1)
+
+        # Extract transfer details
+        transfers = []
+        for match in transfer_pattern.finditer(block):
+            transfers.append({
+                "transfer_number": int(match.group(1)),
+                "from": match.group(2),
+                "to": match.group(3),
+                "amount": match.group(4),
+                "token_name": match.group(5),
+                "token_address": match.group(6)
+            })
+
+        transaction_data["transfers"] = transfers
+        transactions.append(transaction_data)
+
+# Load existing JSON data if the file already exists
+if os.path.exists(output_file):
+    with open(output_file, "r", encoding="utf-8") as json_file:
+        try:
+            existing_data = json.load(json_file)
+            if isinstance(existing_data, list):
+                existing_data.extend(transactions)
+            else:
+                existing_data = transactions  # Overwrite if incorrect format
+        except json.JSONDecodeError:
+            existing_data = transactions  # Handle broken JSON file
+else:
+    existing_data = transactions
+
+# Save to JSON file
+with open(output_file, "w", encoding="utf-8") as json_file:
+    json.dump(existing_data, json_file, indent=4)
+
+print(f"[LOG] Extracted {len(transactions)} transactions saved to {output_file}")
+```
+
+on your data.json will look something like this :
+```json
+ "transaction_time": "2 seconds ago",
+        "gas_price": "1.00 Gwei",
+        "gas_limit": "591450 gas",
+        "gas_used": "0.000199416 Gwei",
+        "transaction_status": " [32mSuccess [0m",
+        "total_bep20_transfers": "4",
+        "date_today": "14/03/2025",
+        "current_time": "6:04:10 pm",
+        "timestamp": "3 seconds ago // Displaying the formatted timestamp",
+        "total_tokens": "3",
+        "total_pools": "4",
+        "total_swaps": "4",
+        "total_addresses": "7",
+        "amount_start": "0.00381093 WBNB",
+        "amount_end": "0.00436520 WBNB",
+        "profit_loss": "$0.321136",
+        "percentage_pnl": "+14.54",
+        "transaction_path": " [38;5;189m [1mswap 1: WBNB > swap 2: wSHIB > swap 3: wBTC > swap 4: WBNB [0m // Fluorescent baby blue and bold for the path",
+        "transfers": [
+            {
+                "transfer_number": 1,
+                "from": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c",
+                "to": "0x74C2F69FB0CB5Df4317A538B51C0A8186F31c08B (pancakeswap_v2, wSHIB / WBNB)",
+                "amount": "0.003810931158961923 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 2,
+                "from": "0x74C2F69FB0CB5Df4317A538B51C0A8186F31c08B",
+                "to": "0xADE812e9302dC9AE52F961A60DD30e16889b2Ab3 (pancakeswap_v2, wSHIB / wBTC)",
+                "amount": "29968166569.407544 wSHIB",
+                "token_name": "wShiba",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 3,
+                "from": "0xADE812e9302dC9AE52F961A60DD30e16889b2Ab3",
+                "to": "0x62EA4676582a373dDC2FEACdd7a1F0b339206861 (pancakeswap_v2, wBTC / WBNB)",
+                "amount": "13091859.15557748 wBTC",
+                "token_name": "wBitcoin",
+                "token_address": "0"
+            },
+            {
+                "transfer_number": 4,
+                "from": "0x62EA4676582a373dDC2FEACdd7a1F0b339206861",
+                "to": "0xB5CB0555A1D28C9DfdbC14017dae131d5c1cc19c (Unknown DEX, Unknown Token Pool)",
+                "amount": "0.004365196915818284 WBNB",
+                "token_name": "Wrapped BNB",
+                "token_address": "0"
+            }
+        ]
+    },
+```
 
 
 
