@@ -1030,14 +1030,19 @@ Raw data some reason mislead arrangement flow :
 ```
 
 🛠 Why Does This Happen?
-Raw transaction logs do not follow swap flow order.
-Some transfers appear before the swap event is fully executed.
-Some transfers bundle multiple steps together.
-BEP-20 logs record internal transfers, not the logical flow.
+
+>Raw transaction logs do not follow swap flow order.
+>Some transfers appear before the swap event is fully executed.
+>Some transfers bundle multiple steps together.
+>BEP-20 logs record internal transfers, not the logical flow.
+
 Smart contracts sometimes execute swaps atomically, moving tokens in unexpected sequences.
-🔹 How to Fix the Arrangement?
+>🔹 How to Fix the Arrangement?
+
 To correctly reorder the transfers, we should:
-✅ Identify the true swap flow by tracking input → output changes.
-✅ Rearrange the logs to match the correct token path.
-✅ Group token movements by logical execution order.
+```
+>✅ Identify the true swap flow by tracking input → output changes.
+>✅ Rearrange the logs to match the correct token path.
+>✅ Group token movements by logical execution order.
+```
 
