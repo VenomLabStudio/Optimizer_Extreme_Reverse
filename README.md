@@ -977,4 +977,89 @@ Solution Approach:
 >Adjust Calculation → If the start and end currencies are different, normalize them using the price.
 
 
+####Using sdk_venom to fetch latest price in "USD" if you have the api or use other sources api to fetch that.for this example we set fixed for test
 
+```python
+import json
+
+# ✅ Load Data from data.json
+with open("data.json", "r") as file:
+    all_data = json.load(file)
+
+# ✅ Swap Fee (0.25% per swap)
+FEE_RATE = 0.997  # 0.25% deducted per swap
+
+# ✅ Mock function for price conversion (Replace this with real API calls)
+def get_price(currency):
+    """Fetch the price of the given currency in USD."""
+    price_feed = {
+        "WBNB": 300,   # Example: 1 WBNB = 300 USD
+        "USDT": 1,     # 1 USDT = 1 USD (Stablecoin)
+        "BUSD": 1      # Example stablecoin
+    }
+    return price_feed.get(currency, 1)  # Default to 1 if unknown
+
+def extract_amount_currency(value):
+    """Extract numeric amount and currency from a string like '1.5 WBNB'."""
+    parts = value.split()
+    return float(parts[0]), parts[1] if len(parts) > 1 else "UNKNOWN"
+
+def calculate_optimal_input(transaction, idx):
+    """Calculate the required starting input to get the desired output."""
+
+    # ✅ Get transaction hash safely
+    tx_hash = transaction.get("hash", f"Unknown_TX_{idx}")
+
+    # ✅ Extract original input and end amount with currency
+    original_input, start_currency = extract_amount_currency(transaction["amount_start"])
+    amount_end, end_currency = extract_amount_currency(transaction["amount_end"])
+
+    # ✅ Convert amounts to USD for comparison if different currencies
+    if start_currency != end_currency:
+        start_price = get_price(start_currency)
+        end_price = get_price(end_currency)
+
+        original_input_usd = original_input * start_price
+        amount_end_usd = amount_end * end_price
+    else:
+        original_input_usd = original_input
+        amount_end_usd = amount_end
+
+    transfers = transaction.get("transfers", [])[::-1]  # Reverse transfers list
+
+    print(f"📌 Transaction {idx}: Hash {tx_hash}")
+
+    if not transfers:
+        print("  ⚠️ Warning: No transfer data found! Skipping...\n")
+        return
+
+    optimal_input = amount_end_usd  
+    for i, swap in enumerate(transfers):
+        output_amount, output_currency = extract_amount_currency(swap["amount"])
+
+        if output_amount > 0:
+            previous_input = optimal_input  # Store previous value
+            optimal_input /= FEE_RATE  # Reverse the fee deduction
+
+            # Compare previous and latest input price
+            price_change = optimal_input - previous_input
+            percentage_change = (price_change / previous_input) * 100 if previous_input != 0 else 0
+
+            print(f"  Step {i+1}: Needed input = {optimal_input:.8f} USD (Before: {previous_input:.8f} USD, Change: {price_change:.8f}, {percentage_change:.4f}%)")
+        else:
+            print(f"  ⚠️ Warning: Zero output detected at step {i+1}!")
+
+    # ✅ Compare Original Input vs. New Calculated Input
+    input_difference = optimal_input - original_input_usd
+    percentage_difference = (input_difference / original_input_usd) * 100 if original_input_usd != 0 else 0
+
+    print(f"\n  🔥 Optimal Starting Input: {optimal_input:.8f} USD")
+    print(f"  🔍 Comparison: Original TX Input = {original_input_usd:.8f} USD, New Optimal Input = {optimal_input:.8f} USD")
+    print(f"  ⚖️ Difference: {input_difference:.8f} USD ({percentage_difference:.4f}%)\n")
+    print("="*60)
+
+# ✅ Process all transactions in data.json
+print("\n🚀 Processing Multiple Transactions...\n")
+for idx, transaction in enumerate(all_data, start=1):
+    calculate_optimal_input(transaction, idx)
+```
