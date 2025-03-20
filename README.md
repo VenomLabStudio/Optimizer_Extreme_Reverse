@@ -411,7 +411,7 @@ node fetchPairsWithMultipleFees.js
 
 Fetching 1000 pairs with fees:
 
-```
+```javascript
 const { GraphQLClient, gql } = require('graphql-request');
 
 // The PancakeSwap V3 Subgraph Endpoint
