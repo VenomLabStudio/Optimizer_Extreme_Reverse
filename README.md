@@ -348,6 +348,47 @@ Transaction Fee Calculation: The actual transaction fee is computed using the fo
 ```
 Transaction Fee=Gas Price×Gas Used
 ```
+# PancakeSwap Swap Fees
+
+## PancakeSwap V2
+
+The standard swap fee on PancakeSwap V2 is **0.25%**.
+
+### Breakdown of the fee:
+- **0.17%**: Goes to **liquidity providers (LPs)**.
+- **0.03%**: Contributes to the **PancakeSwap treasury**.
+- **0.05%**: Sent to the **auto-compounding liquidity pool** for **LP rewards**.
+
+### Example:
+
+- If you swap 100 USDT for 1000 BNB, a fee of **0.25%** will be deducted (0.25 USDT).
+
+---
+
+## PancakeSwap V3
+
+PancakeSwap V3 offers **flexible fees** depending on the risk profile of the liquidity pool:
+
+### Fee Tiers:
+- **0.05%**: For **low-risk assets** (e.g., stablecoins).
+- **0.25%**: For **medium-risk assets** (e.g., common trading pairs).
+- **1%**: For **high-risk assets** (e.g., volatile or less liquid pairs).
+
+### Example:
+
+- If you swap between two stablecoins, the fee could be as low as **0.05%**.
+- If you swap between two highly volatile tokens, the fee could be as high as **1%**.
+
+---
+
+### Summary:
+
+- **PancakeSwap V2 Fee**: **0.25%** (Standard fee, split between LPs, treasury, and rewards).
+- **PancakeSwap V3 Fee**: **0.05% - 1%** (Flexible, based on liquidity pool risk profile).
+
+For more details, check out the [PancakeSwap Documentation](https://pancakeswap.finance).
+
+
 Fetching Actual Gas Fees: The gas price and gas used are dynamically fetched using the Web3 provider
 
 ```
