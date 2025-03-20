@@ -1063,3 +1063,16 @@ print("\n🚀 Processing Multiple Transactions...\n")
 for idx, transaction in enumerate(all_data, start=1):
     calculate_optimal_input(transaction, idx)
 ```
+####What function we mock ? :
+
+```
+# ✅ Mock function for price conversion (Replace this with real API calls)
+def get_price(currency):
+    """Fetch the price of the given currency in USD."""
+    price_feed = {
+        "WBNB": 300,   # Example: 1 WBNB = 300 USD
+        "USDT": 1,     # 1 USDT = 1 USD (Stablecoin)
+        "BUSD": 1      # Example stablecoin
+    }
+    return price_feed.get(currency, 1)  # Default to 1 if unknown
+```
