@@ -963,6 +963,18 @@ Output Response from multi reading transaction :
 ```
 
 
+####Now as you can see there is small issue about optimal input has highly high or highly low jump.Why this happen? 
+>Because the data tx on amountIN and amountOUT
+start with different currency wbnb and usdt or usdt wbnb.Script above only works if amount start and ending have same currency such as wbnb >wbnb / usdt>usdt /Busd>Busd.
+
+>Now we need to adjust
+
+handle cases where the start currency and end currency differ (e.g., WBNB → USDT). This requires normalizing the values using real-time exchange rates (e.g., WBNB to USD conversion).
+
+Solution Approach:
+>Identify Currency Type → Extract the currency symbol (e.g., WBNB, USDT) from amount_start and amount_end.
+>Use a Price Feed → Convert all values to a common base unit (e.g., USD).
+>Adjust Calculation → If the start and end currencies are different, normalize them using the price.
 
 
 
